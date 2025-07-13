@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="chat-interface">
+    <!-- Chat History Sidebar -->
+    <div class="chat-sidebar" id="historySidebar">
+        <div class="sidebar-header">
+            <h3>Chat History</h3>
+            <button class="close-btn" id="closeHistory">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="history-list" id="historyList">
+            <!-- Chat history will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Main Chat Area -->
+    <div class="chat-main">
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <button class="history-btn" id="historyBtn">
+                <i class="fas fa-history"></i>
+            </button>
+            <h2>AI Legal Assistant</h2>
+            <div class="header-actions">
+                <label for="documentUpload" class="upload-btn">
+                    <i class="fas fa-upload"></i>
+                    Upload Document
+                </label>
+                <input type="file" id="documentUpload" accept=".txt,.pdf,.doc,.docx" style="display: none;">
+            </div>
+        </div>
+
+        <!-- Messages Container -->
+        <div class="messages-container" id="messagesContainer">
+            <!-- Welcome message -->
+            <div class="message ai-message">
+                <div class="message-content">
+                    <div class="message-text">
+                        Hello! I'm your AI legal assistant. I can help you with legal questions and document analysis. 
+                        You can upload legal documents and ask me questions about them, or ask general legal questions.
+                    </div>
+                    <div class="message-time">now</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Input Area -->
+        <div class="chat-input-area">
+            <div class="input-container">
+                <textarea 
+                    id="chatInput" 
+                    placeholder="Ask your legal question or upload a document..."
+                    rows="1"
+                ></textarea>
+                <button id="sendBtn" class="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Alert -->
+<div class="upload-alert" id="uploadAlert" style="display: none;">
+    <div class="alert-content">
+        <i class="fas fa-upload"></i>
+        <span>Uploading document...</span>
+        <button class="alert-close" id="alertClose">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Pre-filled query from URL parameter -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const preFilledQuery = urlParams.get('q');
+    if (preFilledQuery) {
+        const chatInput = document.getElementById('chatInput');
+        if (chatInput) {
+            chatInput.value = decodeURIComponent(preFilledQuery);
+        }
+    }
+});
+</script>
+{% endblock %}

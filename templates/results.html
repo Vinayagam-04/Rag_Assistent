@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="chat-messages">
+        <!-- User Message -->
+        <div class="message user-message">
+            <div class="message-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="message-content">
+                <div class="message-header">
+                    <span class="message-author">You</span>
+                    <span class="message-time">{{ query_time|default:"now" }}</span>
+                </div>
+                <div class="message-text">
+                    {{ query }}
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Response -->
+        <div class="message ai-message">
+            <div class="message-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="message-content">
+                <div class="message-header">
+                    <span class="message-author">Legal AI Assistant</span>
+                    <span class="message-time">{{ response_time|default:"now" }}</span>
+                </div>
+                <div class="message-text">
+                    {{ response }}
+                </div>
+                <div class="message-actions">
+                    <button class="action-btn" onclick="copyToClipboard('{{ response|escapejs }}')">
+                        <i class="fas fa-copy"></i>
+                        Copy
+                    </button>
+                    <button class="action-btn" onclick="downloadResponse('{{ response|escapejs }}')">
+                        <i class="fas fa-download"></i>
+                        Download
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Continue Conversation -->
+    <div class="continue-section">
+        <div class="continue-card">
+            <h3>Continue the Conversation</h3>
+            <p>Ask a follow-up question or upload another document</p>
+            <div class="continue-actions">
+                <a href="{% url 'index' %}" class="btn-continue">
+                    <i class="fas fa-plus"></i>
+                    New Question
+                </a>
+                <a href="{% url 'index' %}" class="btn-continue secondary">
+                    <i class="fas fa-upload"></i>
+                    Upload Document
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Questions -->
+    <div class="related-questions">
+        <h4>Related Questions</h4>
+        <div class="question-suggestions">
+            <button class="suggestion-btn" onclick="askQuestion('Can you explain the key terms in more detail?')">
+                <i class="fas fa-search"></i>
+                Explain key terms
+            </button>
+            <button class="suggestion-btn" onclick="askQuestion('What are the potential risks I should be aware of?')">
+                <i class="fas fa-exclamation-triangle"></i>
+                Identify risks
+            </button>
+            <button class="suggestion-btn" onclick="askQuestion('What are my legal obligations under this document?')">
+                <i class="fas fa-balance-scale"></i>
+                Legal obligations
+            </button>
+            <button class="suggestion-btn" onclick="askQuestion('Are there any deadlines or time constraints mentioned?')">
+                <i class="fas fa-clock"></i>
+                Deadlines
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        // Show success message
+        const btn = event.target.closest('.action-btn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+        }, 2000);
+    });
+}
+
+function downloadResponse(text) {
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'legal-ai-response.txt';
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+
+function askQuestion(question) {
+    // Redirect to index with the question pre-filled
+    window.location.href = `{% url 'index' %}?q=${encodeURIComponent(question)}`;
+}
+</script>
+{% endblock %}
